@@ -1,0 +1,15 @@
+
+
+module Main(input ir_pin,clk,rst,output servo);
+    wire ir_out;
+    reg [7:0]position;
+    ir_module servo01(ir_pin,ir_out);
+    always@(*)
+    begin
+        if(ir_out)
+        position<=8'b11110000;
+        else
+        position<=0;
+    end
+    servo_controller san(clk,rst,position,servo);
+endmodule
