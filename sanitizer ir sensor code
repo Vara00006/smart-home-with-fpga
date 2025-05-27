@@ -1,0 +1,5 @@
+
+
+module ir_module(input ir_pin,output out);
+    assign out=ir_pin?0:1;
+endmodule
