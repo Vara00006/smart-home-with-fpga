@@ -1,0 +1,38 @@
+
+
+module ir_led_delay (
+    input clk,           // 50 MHz clock
+    input ir_pin,        // IR sensor input
+    output reg led       // LED output
+);
+
+parameter TEN_SEC_COUNT = 500_000_000;  // 10s at 50MHz
+reg [28:0] counter = 0;
+reg triggered = 0;
+reg ir_prev = 0;
+
+// Rising edge detect
+wire ir_rising = ~ir_prev & ir_pin;
+
+always @(posedge clk) begin
+    ir_prev <= ir_pin;
+
+    if (!triggered) begin
+        if (ir_rising) begin
+            triggered <= 1;
+            counter <= 0;
+            led <= 1;  // Turn on LED
+        end else begin
+            led <= 0;
+        end
+    end else begin
+        if (counter < TEN_SEC_COUNT)
+            counter <= counter + 1;
+        else begin
+            triggered <= 0;
+            led <= 0;  // Turn off LED
+        end
+    end
+end
+
+endmodule
